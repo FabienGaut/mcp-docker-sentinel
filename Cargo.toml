@@ -1,0 +1,22 @@
+[package]
+name = "mcp-docker-sentinel"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# Runtime asynchrone
+tokio = { version = "1.0", features = ["full"] }
+futures-util = "0.3"
+
+# Docker SDK
+bollard = "0.15"
+
+# MCP Protocol & JSON
+mcp-sdk-rs = "0.1.0" # Vérifie la dernière version sur crates.io
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Gestion d'erreurs propre
+thiserror = "1.0"
+anyhow = "1.0"
+async-trait = "0.1"
