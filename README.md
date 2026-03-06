@@ -17,6 +17,10 @@ This project was born from a dual ambition: to master the Model Context Protocol
 | `get_logs` | Fetch the last N log lines of a container | `container_id`, `tail` (default: 50) |
 | `inspect_container` | Full technical details (network, volumes, env) | `container_id` |
 | `stop_container` | Stop a running container | `container_id` |
+| `start_container` | Start a stopped container | `container_id` |
+| `restart_container` | Restart a running or stopped container | `container_id` |
+| `remove_container` | Delete a container | `container_id`, `force` (default: false) |
+| `list_images` | List all local Docker images (id, tags, size) | — |
 
 ## Requirements
 
@@ -96,12 +100,8 @@ PRs are welcome. Here are the most useful things that could be added:
 
 | Tool | What it would do |
 |---|---|
-| `start_container` | Start a stopped container |
-| `restart_container` | Restart a running or stopped container |
-| `remove_container` | Delete a container (with a `force` flag) |
 | `get_stats` | Live CPU / memory / network usage for a container |
 | `exec_command` | Run a command inside a container (`docker exec`) |
-| `list_images` | List all local Docker images |
 | `remove_image` | Delete a local image |
 | `pull_image` | Pull an image from a registry |
 | `list_networks` | List Docker networks and their connected containers |

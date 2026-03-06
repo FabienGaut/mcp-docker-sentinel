@@ -1,7 +1,9 @@
 use bollard::Docker;
-use bollard::container::{ListContainersOptions, LogsOptions, StopContainerOptions};
+use bollard::container::{InspectContainerOptions, ListContainersOptions, LogsOptions, RemoveContainerOptions, RestartContainerOptions, StartContainerOptions, StopContainerOptions};
+use bollard::image::ListImagesOptions;
+use serde_json::Value;
 use futures_util::StreamExt;
-use anyhow::Result; 
+use anyhow::Result;
 
 pub struct DockerClient {
     // permet de parler au démon Docker
@@ -60,6 +62,46 @@ impl DockerClient {
         self.inner.stop_container(name, Some(options)).await?;
         Ok(())
     }
+
+    pub async fn start_container(&self, name: &str) -> Result<()> {
+        let options: Option<StartContainerOptions<String>> = None;
+        self.inner.start_container(name, options).await?;
+        Ok(())
+    }
+
+    pub async fn inspect_container(&self, name: &str) -> Result<Value> {
+        let options: Option<InspectContainerOptions> = None;
+        let info = self.inner.inspect_container(name, options).await?;
+        Ok(serde_json::to_value(info)?)
+    }
+
+    pub async fn restart_container(&self, name: &str, timeout_seconds: i64) -> Result<()> {
+        let options = RestartContainerOptions { t: timeout_seconds as isize };
+        self.inner.restart_container(name, Some(options)).await?;
+        Ok(())
+    }
+
+    pub async fn remove_container(&self, name: &str, force: bool) -> Result<()> {
+        let options = RemoveContainerOptions {
+            force,
+            ..Default::default()
+        };
+        self.inner.remove_container(name, Some(options)).await?;
+        Ok(())
+    }
+
+    pub async fn list_images(&self) -> Result<Vec<Image>> {
+        let options = Some(ListImagesOptions::<String> {
+            all: false,
+            ..Default::default()
+        });
+        let images = self.inner.list_images(options).await?;
+        Ok(images.into_iter().map(|i| Image {
+            id: i.id,
+            tags: i.repo_tags,
+            size: i.size,
+        }).collect())
+    }
 }
 
 #[derive(serde::Serialize)]
@@ -67,4 +109,11 @@ pub struct Container {
     pub name: String,
     pub status: String,
     pub image: String,
+}
+
+#[derive(serde::Serialize)]
+pub struct Image {
+    pub id: String,
+    pub tags: Vec<String>,
+    pub size: i64,
 }

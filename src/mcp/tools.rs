@@ -51,6 +51,53 @@ pub fn get_tools_definition() -> Value {
                 },
                 "required": ["container_id"]
             }
+        },
+        {
+            "name": "start_container",
+            "description": "Démarre un conteneur.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "container_id": { "type": "string" }
+                },
+                "required": ["container_id"]
+            }
+        },
+        {
+            "name": "restart_container",
+            "description": "Redémarre un conteneur (running ou stopped).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "container_id": { "type": "string" }
+                },
+                "required": ["container_id"]
+            }
+        },
+        {
+            "name": "remove_container",
+            "description": "Supprime un conteneur. Utiliser force=true pour forcer la suppression même si le conteneur est en cours d'exécution.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "container_id": { "type": "string" },
+                    "force": {
+                        "type": "boolean",
+                        "description": "Forcer la suppression même si le conteneur tourne (défaut: false).",
+                        "default": false
+                    }
+                },
+                "required": ["container_id"]
+            }
+        },
+        {
+            "name": "list_images",
+            "description": "Liste toutes les images Docker locales avec leur ID, tags et taille.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
         }
     ])
 }
