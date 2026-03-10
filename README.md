@@ -21,6 +21,12 @@ This project was born from a dual ambition: to master the Model Context Protocol
 | `restart_container` | Restart a running or stopped container | `container_id` |
 | `remove_container` | Delete a container | `container_id`, `force` (default: false) |
 | `list_images` | List all local Docker images (id, tags, size) | — |
+| `get_stats` | Live CPU / memory / network usage for a container | `container_id` |
+| `exec_command` | Run a command inside a container (`docker exec`) | `container_id`, `command` (array) |
+| `remove_image` | Delete a local image | `image_id`, `force` (default: false) |
+| `pull_image` | Pull an image from a registry | `image` |
+| `list_networks` | List Docker networks and their connected containers | — |
+| `list_volumes` | List Docker volumes | — |
 
 ## Requirements
 
@@ -30,9 +36,17 @@ This project was born from a dual ambition: to master the Model Context Protocol
 ## Build
 
 ```bash
-git clone https://github.com/your-username/mcp-docker-sentinel.git
+git clone https://github.com/FabienGaut/mcp-docker-sentinel.git
 cd mcp-docker-sentinel
 cargo build --release
+```
+
+The binary will be at `./target/release/mcp-docker-sentinel`.
+
+For development (unoptimized, faster compilation):
+
+```bash
+cargo run
 ```
 
 ## Setup
@@ -78,7 +92,35 @@ Add to your config file:
 
 Restart Claude Desktop after saving.
 
+### Cursor
 
+Add to `.cursor/mcp.json` in your project root (or `~/.cursor/mcp.json` for global):
+
+```json
+{
+  "mcpServers": {
+    "docker-sentinel": {
+      "command": "/absolute/path/to/mcp-docker-sentinel"
+    }
+  }
+}
+```
+
+### Windsurf
+
+Add to `~/.codeium/windsurf/mcp_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "docker-sentinel": {
+      "command": "/absolute/path/to/mcp-docker-sentinel"
+    }
+  }
+}
+```
+
+> **Note**: For all configurations above, replace the command path with the absolute path to the built binary (e.g. `/home/user/mcp-docker-sentinel/target/release/mcp-docker-sentinel`).
 
 ## Project structure
 
@@ -92,20 +134,6 @@ src/
     └── tools.rs      # Tool definitions & schemas
 ```
 
-## Contributing
-
-PRs are welcome. Here are the most useful things that could be added:
-
-**New tools**
-
-| Tool | What it would do |
-|---|---|
-| `get_stats` | Live CPU / memory / network usage for a container |
-| `exec_command` | Run a command inside a container (`docker exec`) |
-| `remove_image` | Delete a local image |
-| `pull_image` | Pull an image from a registry |
-| `list_networks` | List Docker networks and their connected containers |
-| `list_volumes` | List Docker volumes |
 
 **Configuration**
 

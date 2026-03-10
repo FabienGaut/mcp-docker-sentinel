@@ -1,29 +1,29 @@
 use serde_json::{json, Value};
 
-pub fn get_tools_definition() -> Value {
+pub fn get_tools_definition() -> Value { // format of the tools to call functions
     json!([
         {
             "name": "list_containers",
-            "description": "Liste tous les conteneurs Docker locaux. Retourne leur nom, image, ID et statut (running, exited, etc.).",
+            "description": "Lists all local Docker containers. Returns their name, image, ID and status (running, exited, etc.).",
             "inputSchema": {
                 "type": "object",
-                "properties": {}, // Pas d'arguments nécessaires
+                "properties": {},
                 "required": []
             }
         },
         {
             "name": "get_logs",
-            "description": "Récupère les dernières lignes de log d'un conteneur. Peut permettre de diagnostiquer une erreur ou un crash.",
+            "description": "Retrieves the last lines of a container's logs. Useful for diagnosing errors or crashes.",
             "inputSchema": {
                 "type": "object",
                 "properties": {
                     "container_id": {
                         "type": "string",
-                        "description": "Le nom ou l'ID court du conteneur (ex: 'my-db')"
+                        "description": "The name or short ID of the container (e.g. 'my-db')"
                     },
                     "tail": {
                         "type": "integer",
-                        "description": "Nombre de lignes à récupérer en partant de la fin.",
+                        "description": "Number of lines to retrieve from the end.",
                         "default": 50
                     }
                 },
@@ -32,7 +32,7 @@ pub fn get_tools_definition() -> Value {
         },
         {
             "name": "inspect_container",
-            "description": "Donne les détails techniques complets d'un conteneur (Réseau, Volumes, Variables d'environnement).",
+            "description": "Returns full technical details of a container (Network, Volumes, Environment variables).",
             "inputSchema": {
                 "type": "object",
                 "properties": {
@@ -43,7 +43,7 @@ pub fn get_tools_definition() -> Value {
         },
         {
             "name": "stop_container",
-            "description": "Arrête un conteneur.",
+            "description": "Stops a container.",
             "inputSchema": {
                 "type": "object",
                 "properties": {
@@ -54,7 +54,7 @@ pub fn get_tools_definition() -> Value {
         },
         {
             "name": "start_container",
-            "description": "Démarre un conteneur.",
+            "description": "Starts a container.",
             "inputSchema": {
                 "type": "object",
                 "properties": {
@@ -65,7 +65,7 @@ pub fn get_tools_definition() -> Value {
         },
         {
             "name": "restart_container",
-            "description": "Redémarre un conteneur (running ou stopped).",
+            "description": "Restarts a container (running or stopped).",
             "inputSchema": {
                 "type": "object",
                 "properties": {
@@ -76,14 +76,14 @@ pub fn get_tools_definition() -> Value {
         },
         {
             "name": "remove_container",
-            "description": "Supprime un conteneur. Utiliser force=true pour forcer la suppression même si le conteneur est en cours d'exécution.",
+            "description": "Removes a container. Use force=true to force removal even if the container is running.",
             "inputSchema": {
                 "type": "object",
                 "properties": {
                     "container_id": { "type": "string" },
                     "force": {
                         "type": "boolean",
-                        "description": "Forcer la suppression même si le conteneur tourne (défaut: false).",
+                        "description": "Force removal even if the container is running (default: false).",
                         "default": false
                     }
                 },
@@ -92,7 +92,91 @@ pub fn get_tools_definition() -> Value {
         },
         {
             "name": "list_images",
-            "description": "Liste toutes les images Docker locales avec leur ID, tags et taille.",
+            "description": "Lists all local Docker images with their ID, tags and size.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
+        },
+        {
+            "name": "get_stats",
+            "description": "Shows real-time statistics for a container: CPU, memory, network.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "container_id": {
+                        "type": "string",
+                        "description": "The name or ID of the container"
+                    }
+                },
+                "required": ["container_id"]
+            }
+        },
+        {
+            "name": "exec_command",
+            "description": "Executes a command inside a running container (equivalent to docker exec).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "container_id": {
+                        "type": "string",
+                        "description": "The name or ID of the container"
+                    },
+                    "command": {
+                        "type": "array",
+                        "items": { "type": "string" },
+                        "description": "The command to execute as an array (e.g. [\"ls\", \"-la\"])"
+                    }
+                },
+                "required": ["container_id", "command"]
+            }
+        },
+        {
+            "name": "remove_image",
+            "description": "Removes a local Docker image.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "image_id": {
+                        "type": "string",
+                        "description": "The name or ID of the image to remove"
+                    },
+                    "force": {
+                        "type": "boolean",
+                        "description": "Force removal even if the image is in use (default: false).",
+                        "default": false
+                    }
+                },
+                "required": ["image_id"]
+            }
+        },
+        {
+            "name": "pull_image",
+            "description": "Downloads an image from a Docker registry (e.g. docker pull).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "image": {
+                        "type": "string",
+                        "description": "The name of the image to download (e.g. 'nginx:latest', 'postgres:16')"
+                    }
+                },
+                "required": ["image"]
+            }
+        },
+        {
+            "name": "list_networks",
+            "description": "Lists Docker networks and the containers connected to them.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
+        },
+        {
+            "name": "list_volumes",
+            "description": "Lists Docker volumes with their name, driver and mountpoint.",
             "inputSchema": {
                 "type": "object",
                 "properties": {},
